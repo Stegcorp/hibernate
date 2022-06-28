@@ -1,6 +1,6 @@
-import models.Gendrer;
-import models.Passport;
-import models.User;
+import models.Car;
+import models.Owner;
+import models.Type;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.Metadata;
@@ -8,8 +8,6 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
-import java.util.Arrays;
-import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
@@ -19,8 +17,8 @@ public class Main {
                 .build();
 
         Metadata metadata = new MetadataSources(serviceRegistry)
-                .addAnnotatedClass(null)
-                .addAnnotatedClass(null)
+                .addAnnotatedClass(Car.class)
+                .addAnnotatedClass(Owner.class)
                 .getMetadataBuilder()
                 .build();
 
@@ -32,9 +30,16 @@ public class Main {
 
         session.beginTransaction();
 
-
+        session.save(new Owner("Stepan", new Car("tesla", Type.ELECTRICALCAR, 450, 50000, 2014)));
+        session.save(new Owner("Ivan", new Car("BMW", Type.SEDAN, 450, 24000, 2014)));
+        session.save(new Owner("Petro", new Car("tesla", Type.ELECTRICALCAR, 450, 50000, 2014)));
+        session.save(new Owner("Taras", new Car("tesla", Type.ELECTRICALCAR, 450, 50000, 2014)));
+        session.save(new Owner("Oleg", new Car("tesla", Type.ELECTRICALCAR, 450, 50000, 2014)));
         session.getTransaction().commit();
-
+        session.createQuery("select o from Owner o ", Owner.class).getResultList().forEach(owner -> {
+            System.out.println(owner);
+            System.out.println(owner.getCar());
+        });
         session.close();
         sessionFactory.close();
 
