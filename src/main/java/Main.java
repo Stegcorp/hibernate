@@ -5,6 +5,10 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
+import java.sql.Array;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class Main {
     public static void main(String[] args) {
@@ -14,8 +18,9 @@ public class Main {
                 .build();
 
         Metadata metadata = new MetadataSources(serviceRegistry)
-                .addAnnotatedClass(null)
-                .addAnnotatedClass(null)
+                .addAnnotatedClass(User.class)
+                .addAnnotatedClass(SuperHero.class)
+                .addAnnotatedClass(Car.class)
                 .getMetadataBuilder()
                 .build();
 
@@ -24,9 +29,12 @@ public class Main {
                 .build();
 
         Session session = sessionFactory.openSession();
-
+       List<Car>cars = new ArrayList<>();
+       cars.add(new Car("tesla"));
+       cars.add(new Car("BMW"));
         session.beginTransaction();
-
+        session.save(new User("vasia", new SuperHero("superman", Side.DC), cars));
+        session.save(new User("Vova", new SuperHero("spider-man", Side.MARVEL),cars));
 
         session.getTransaction().commit();
 
